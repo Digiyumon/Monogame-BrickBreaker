@@ -11,6 +11,8 @@ namespace BrickBreaker
 
         private Texture2D _bgTexture;
 
+        private Paddle paddle;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -25,7 +27,7 @@ namespace BrickBreaker
             _graphics.PreferredBackBufferHeight = 768;
             _graphics.ApplyChanges();
 
-            _bgTexture = Content.Load<Texture2D>("bg");
+            
 
             base.Initialize();
         }
@@ -34,6 +36,10 @@ namespace BrickBreaker
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            _bgTexture = Content.Load<Texture2D>("bg");
+            paddle = new Paddle(this);
+            paddle.LoadContent();
+            paddle._position = new Vector2(512, 740);
             // TODO: use this.Content to load your game content here
         }
 
@@ -43,6 +49,8 @@ namespace BrickBreaker
                 Exit();
 
             // TODO: Add your update logic here
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            paddle.Update(deltaTime);
 
             base.Update(gameTime);
         }
@@ -54,6 +62,7 @@ namespace BrickBreaker
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             _spriteBatch.Draw(_bgTexture, new Vector2(0, 0), Color.White);
+            paddle.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

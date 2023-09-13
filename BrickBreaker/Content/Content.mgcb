@@ -16,3 +16,6 @@
 #begin bg.xnb
 /copy:bg.xnb
 
+#begin paddle.xnb
+/copy:paddle.xnb
+
