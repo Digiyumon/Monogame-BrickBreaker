@@ -13,6 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ball.xnb
+/copy:ball.xnb
+
 #begin bg.xnb
 /copy:bg.xnb
 

@@ -16,6 +16,16 @@ namespace BrickBreaker
         protected Game1 _game;
         public Vector2 _position = Vector2.Zero;
 
+        //Since we are gong to be needing to grab the width and height of game objects very regularly, we just have them as variables for the game object that we can get
+        public float _width
+        {
+            get { return _texture.Width; }
+        }
+        public float _height
+        {
+            get { return _texture.Height; }
+        }
+
         public GameObject(Game1 myGame)
         {
             //_name = name;
@@ -48,5 +58,6 @@ namespace BrickBreaker
                 batch.Draw(_texture,drawPosition, Color.White);
             }
         }
+
      }
  }
