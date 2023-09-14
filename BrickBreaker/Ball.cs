@@ -12,7 +12,7 @@ namespace BrickBreaker
     public class Ball : GameObject
     {
 
-        public float _ballSpeed = 200;
+        public float _ballSpeed = 300;
         public Vector2 _ballDirection = new Vector2(0.707f, -0.707f);
         public Ball(Game1 myGame) :
             base(myGame)

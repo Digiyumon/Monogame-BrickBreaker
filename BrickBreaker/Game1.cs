@@ -16,6 +16,11 @@ namespace BrickBreaker
         private Paddle paddle;
         private Ball ball;
 
+        private int lives = 3;
+
+        public Random _random  = new Random();
+
+
 
         public Game1()
         {
@@ -52,11 +57,45 @@ namespace BrickBreaker
             // TODO: use this.Content to load your game content here
         }
 
-        protected void CheckCollisions()
+        protected void CheckCollision()
         {
-            //if
+            float ballRadius = ball._width/ 2;
+            if (MathF.Abs(ball._position.X - 32) < ballRadius)
+            {
+                ball._ballDirection.X = ball._ballDirection.X * -1;
+            }
+            if(MathF.Abs(ball._position.X - 992) < ballRadius)
+            {
+                //riht collision
+                ball._ballDirection.X = ball._ballDirection.X * -1;
+            }
+            if(MathF.Abs(ball._position.Y - 32) < ballRadius)
+            {
+                //top collisoin
+                ball._ballDirection.Y = ball._ballDirection.Y * -1;
+            }
+            
+        }
 
-            //MathF.Abs(ball._position.X - 32)
+        protected void CheckGameLost()
+        {
+            if(ball._position.Y > 750 + ball._width && lives > 0)
+            {
+                ball._position = new Vector2(512, 740 - (ball._height + paddle._height));
+                ball._ballDirection = new Vector2(randomFloat(-0.999f, 0.999f), -0.707f);
+                ball._ballSpeed = 300;
+                lives--;
+            }
+            else if (lives <= 0 )
+            {
+                Exit();
+            }
+        }
+
+        public float randomFloat(float min, float max)
+        {
+            double result = (_random.NextDouble() * (max - min)) + min;
+            return (float) result;
         }
 
         protected override void Update(GameTime gameTime)
@@ -69,7 +108,7 @@ namespace BrickBreaker
             paddle.Update(deltaTime);
             ball.Update(deltaTime);
             CheckCollision();
-
+            CheckGameLost();
             base.Update(gameTime);
         }
 
