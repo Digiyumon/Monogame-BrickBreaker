@@ -31,6 +31,18 @@ namespace BrickBreaker
         List<Block> blocks = new List<Block>();
         private int blockHit = 0;
 
+
+        //This block layout variable defines how many of each block there are and what type
+        //The color of the block is determined by the number in the array
+        int[,] blockLayout = new int[,]{
+           {5,5,5,5,5,5,5,5,5,5,5,5,5,5,5},
+           {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+           {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+           {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+           {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+           {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
+        };
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -63,14 +75,22 @@ namespace BrickBreaker
             ball.LoadContent();
             ball._position = new Vector2(512, 740);
 
-            //for loop to be creating the first line of blocks in the game
-            for (int i = 0; i < 15; i++)
-            {
-                Block tempBlock = new Block( BlockColor.Blue , this);
-                tempBlock.LoadContent();
-                tempBlock._position = new Vector2(64 + i * 64, 200);
-                blocks.Add(tempBlock);
-            }
+            //for loop to be creating the layout of blocks thats provided with the block layout variable
+            //since its a 2d array that we are having to sift through, we are using 2 for loops in order to render each of the blocks
+            //first for loop deals with the rows
+            //Second for loop deals with the columns
+            for (int i = 0; i < blockLayout.GetLength(0); i++)
+                for(int j = 0; j < blockLayout.GetLength(1); j++)
+                {
+                    {
+                        Block tempBlock = new Block((BlockColor)blockLayout[i,j], this);
+                        tempBlock.LoadContent();
+                        //tempBlock._position = new Vector2(64 + i * 64, 200 - 32 * j);
+                        tempBlock._position = new Vector2(64 + 64 * j, 100 + 32 * i);
+                        blocks.Add(tempBlock);
+                    }
+                }
+            
 
             Debug.WriteLine(paddle._width);
         }
@@ -181,7 +201,7 @@ namespace BrickBreaker
             {
                 ball._position = new Vector2(512, 740 - (ball._height + paddle._height));
                 ball._ballDirection = new Vector2(randomFloat(-0.999f, 0.999f), -0.707f);
-                ball._ballSpeed = 300;
+                ball._ballSpeed = 400;
                 lives--;
             }
             //if the player has no lives then it will exit the game, 
