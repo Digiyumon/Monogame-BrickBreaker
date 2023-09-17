@@ -19,6 +19,48 @@
 #begin bg.xnb
 /copy:bg.xnb
 
+#begin block_blue.xnb
+/copy:block_blue.xnb
+
+#begin block_green.xnb
+/copy:block_green.xnb
+
+#begin block_grey_hi.xnb
+/copy:block_grey_hi.xnb
+
+#begin block_grey.xnb
+/copy:block_grey.xnb
+
+#begin block_purple.xnb
+/copy:block_purple.xnb
+
+#begin block_red.xnb
+/copy:block_red.xnb
+
+#begin block_yellow.xnb
+/copy:block_yellow.xnb
+
+#begin blocks/block_blue.xnb
+/copy:blocks/block_blue.xnb
+
+#begin blocks/block_green.xnb
+/copy:blocks/block_green.xnb
+
+#begin blocks/block_grey_hi.xnb
+/copy:blocks/block_grey_hi.xnb
+
+#begin blocks/block_grey.xnb
+/copy:blocks/block_grey.xnb
+
+#begin blocks/block_purple.xnb
+/copy:blocks/block_purple.xnb
+
+#begin blocks/block_red.xnb
+/copy:blocks/block_red.xnb
+
+#begin blocks/block_yellow.xnb
+/copy:blocks/block_yellow.xnb
+
 #begin paddle.xnb
 /copy:paddle.xnb
 

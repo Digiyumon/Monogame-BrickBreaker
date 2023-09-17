@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BrickBreaker
 {
@@ -16,11 +18,18 @@ namespace BrickBreaker
         private Paddle paddle;
         private Ball ball;
 
+        //lives of the player :P
         private int lives = 3;
 
+        //Random variable that's used when launching the ball so that it's not predictable everytime 
         public Random _random  = new Random();
 
+        //Int that's used to keep count of the frames so that we can do a quick fix for the collision issues with the ball and the paddle
+        private int frameCount = 0;
 
+        //blocks
+        List<Block> blocks = new List<Block>();
+        private int blockHit = 0;
 
         public Game1()
         {
@@ -53,13 +62,54 @@ namespace BrickBreaker
             paddle._position = new Vector2(512, 740);
             ball.LoadContent();
             ball._position = new Vector2(512, 740);
-            //ball._position = new Vector2(512, 742);
-            // TODO: use this.Content to load your game content here
+
+            //for loop to be creating the first line of blocks in the game
+            for (int i = 0; i < 15; i++)
+            {
+                Block tempBlock = new Block( BlockColor.Blue , this);
+                tempBlock.LoadContent();
+                tempBlock._position = new Vector2(64 + i * 64, 200);
+                blocks.Add(tempBlock);
+            }
+
+            Debug.WriteLine(paddle._width);
         }
 
         protected void CheckCollision()
         {
             float ballRadius = ball._width/ 2;
+            
+            bool removeBall = false;
+            //if (ball._position.X > (paddle._position.X - ballRadius - paddle._width / 2) && 
+            //    ball._position.X < (paddle._position.X + ballRadius + paddle._width / 2) && 
+            //    ball._position.Y < paddle._position.Y && 
+            //    ball._position.Y > (paddle._position.Y - ballRadius - paddle._height/2)) 
+            //{
+            //    ball._ballDirection.Y = ball._ballDirection.Y * -1;
+            //}
+
+            //if the ball is on the right side of the paddle then we will send the ball more to the right
+            //This isn't a perfect implementation of it but it's what I have so far
+            if (ball._position.X > (paddle._position.X - ballRadius - paddle._width / 2) &&
+                ball._position.X < (paddle._position.X + ballRadius + paddle._width / 2) &&
+                ball._position.Y < paddle._position.Y &&
+                ball._position.Y > (paddle._position.Y - ballRadius - paddle._height / 2) && ball._position.X > paddle._position.X && frameCount <= 0)
+            {
+                ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(0.3f, -0.981f));
+                frameCount = 20;
+            }
+            //If the ball is on the left side of the paddle then we will send the ball towards the left 
+            //Again not perfect but its a work in progress
+            if (ball._position.X > (paddle._position.X - ballRadius - paddle._width / 2) &&
+                ball._position.X < (paddle._position.X + ballRadius + paddle._width / 2) &&
+                ball._position.Y < paddle._position.Y &&
+                ball._position.Y > (paddle._position.Y - ballRadius - paddle._height / 2) && ball._position.X < paddle._position.X && frameCount <= 0)
+            {
+                ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(-0.3f, -0.981f));
+                frameCount = 20;
+            }
+
+            //These functions are just used when ball collides with a wall or ceiling
             if (MathF.Abs(ball._position.X - 32) < ballRadius)
             {
                 ball._ballDirection.X = ball._ballDirection.X * -1;
@@ -74,11 +124,59 @@ namespace BrickBreaker
                 //top collisoin
                 ball._ballDirection.Y = ball._ballDirection.Y * -1;
             }
-            
+            frameCount--;
+
+            foreach (Block b in blocks)
+            {
+                //This is if it hits the bottom of the block
+                if (MathF.Abs(ball._position.Y - (b._position.Y + b._height/2)) < ballRadius && 
+                    ball._position.X > b._position.X - b._width/2 && 
+                    ball._position.X < b._position.X + b._width/2)
+                {
+                    ball._ballDirection.Y = ball._ballDirection.Y * -1;
+                    blockHit = blocks.IndexOf(b);
+                    removeBall = true; break;
+                }
+
+                //hitting the left side of the blocks
+                if (MathF.Abs(ball._position.X - (b._position.X - b._width/2)) < ballRadius && (b._position.Y + b._height / 2) > ball._position.Y && (b._position.Y - b._height/2 < ball._position.Y))
+                {
+                    ball._ballDirection.X = ball._ballDirection.X * -1;
+                    blockHit = blocks.IndexOf(b);
+                    removeBall = true; break;
+                }
+
+                //hitting the right side of the blocks
+                if (MathF.Abs(ball._position.X - (b._position.X + b._width / 2)) < ballRadius && (b._position.Y + b._height / 2) > ball._position.Y && (b._position.Y - b._height / 2 < ball._position.Y))
+                {
+                    ball._ballDirection.X = ball._ballDirection.X * -1;
+                    blockHit = blocks.IndexOf(b);
+                    removeBall = true; break;
+                }
+
+                if (MathF.Abs(ball._position.Y - (b._position.Y - b._height / 2)) < ballRadius &&
+                    ball._position.X > b._position.X - b._width / 2 &&
+                    ball._position.X < b._position.X + b._width / 2)
+                {
+                    ball._ballDirection.Y = ball._ballDirection.Y * -1;
+                    blockHit = blocks.IndexOf(b);
+                    removeBall = true; break;
+                }
+            }
+            if(removeBall)
+            {
+                Debug.WriteLine(blockHit.ToString());
+                blocks.RemoveAt(blockHit);
+                removeBall = false;
+            }
+           
         }
+
+
 
         protected void CheckGameLost()
         {
+            //if the ball is below a certain height and the player has lives then the game will reset the ball 
             if(ball._position.Y > 750 + ball._width && lives > 0)
             {
                 ball._position = new Vector2(512, 740 - (ball._height + paddle._height));
@@ -86,6 +184,8 @@ namespace BrickBreaker
                 ball._ballSpeed = 300;
                 lives--;
             }
+            //if the player has no lives then it will exit the game, 
+            //later this will be a game over screen where they can restart 
             else if (lives <= 0 )
             {
                 Exit();
@@ -121,6 +221,10 @@ namespace BrickBreaker
             _spriteBatch.Draw(_bgTexture, new Vector2(0, 0), Color.White);
             paddle.Draw(_spriteBatch);
             ball.Draw(_spriteBatch);
+            foreach (Block b in blocks)
+            {
+                b.Draw(_spriteBatch);
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }
