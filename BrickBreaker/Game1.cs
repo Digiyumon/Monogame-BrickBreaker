@@ -4,9 +4,14 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using FmodForFoxes;
+using FMOD;
+using System.Runtime.InteropServices;
+
 
 namespace BrickBreaker
 {
+    
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -31,6 +36,10 @@ namespace BrickBreaker
         List<Block> blocks = new List<Block>();
         private int blockHit = 0;
 
+        //fmod studio stuff
+        private readonly INativeFmodLibrary _nativeLibrary;
+        
+
 
         //This block layout variable defines how many of each block there are and what type
         //The color of the block is determined by the number in the array
@@ -43,11 +52,12 @@ namespace BrickBreaker
            {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4},
         };
 
-        public Game1()
+        public Game1(INativeFmodLibrary nativeLibrary)
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _nativeLibrary = nativeLibrary;
         }
 
         protected override void Initialize()
@@ -57,9 +67,18 @@ namespace BrickBreaker
             _graphics.PreferredBackBufferHeight = 768;
             _graphics.ApplyChanges();
 
-            
+            FmodManager.Init(_nativeLibrary, FmodInitMode.CoreAndStudio, "Content");
+
+            var sound = CoreSystem.LoadStreamedSound("pong.wav");
+            //var channel = sound.Play();
+            //channel.Looping = true;
 
             base.Initialize();
+        }
+
+        protected override void UnloadContent()
+        { 
+            FmodManager.Unload();
         }
 
         protected override void LoadContent()
@@ -92,7 +111,7 @@ namespace BrickBreaker
                 }
             
 
-            Debug.WriteLine(paddle._width);
+            
         }
 
         protected void CheckCollision()
@@ -117,6 +136,7 @@ namespace BrickBreaker
             {
                 ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(0.3f, -0.981f));
                 frameCount = 20;
+               // var channel  = 
             }
             //If the ball is on the left side of the paddle then we will send the ball towards the left 
             //Again not perfect but its a work in progress
@@ -185,7 +205,7 @@ namespace BrickBreaker
             }
             if(removeBall)
             {
-                Debug.WriteLine(blockHit.ToString());
+                
                 blocks.RemoveAt(blockHit);
                 removeBall = false;
             }
@@ -229,6 +249,7 @@ namespace BrickBreaker
             ball.Update(deltaTime);
             CheckCollision();
             CheckGameLost();
+            FmodManager.Update();
             base.Update(gameTime);
         }
 

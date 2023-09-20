@@ -13,6 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin 4359__noisecollector__pongblipf4.wav
+/copy:4359__noisecollector__pongblipf4.wav;pong.wav
+
 #begin ball.xnb
 /copy:ball.xnb
 

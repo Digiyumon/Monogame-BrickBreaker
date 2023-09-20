@@ -1,3 +1,6 @@
 ﻿
-using var game = new BrickBreaker.Game1();
-game.Run();
+using BrickBreaker;
+using FmodForFoxes;
+
+using (var game = new Game1(new DesktopNativeFmodLibrary()))
+    game.Run();

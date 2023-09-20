@@ -11,14 +11,82 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="fmod.dll" />
+    <None Remove="fmodL.dll" />
+    <None Remove="fmodstudio.dll" />
+    <None Remove="fmodstudioL.dll" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
+    <None Remove="libfmod.so" />
+    <None Remove="libfmod.so.13" />
+    <None Remove="libfmod.so.13.17" />
+    <None Remove="libfmodL.so" />
+    <None Remove="libfmodL.so.13" />
+    <None Remove="libfmodL.so.13.17" />
+    <None Remove="libfmodstudio.so" />
+    <None Remove="libfmodstudio.so.13" />
+    <None Remove="libfmodstudio.so.13.17" />
+    <None Remove="libfmodstudioL.so" />
+    <None Remove="libfmodstudioL.so.13" />
+    <None Remove="libfmodstudioL.so.13.17" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fmodL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fmodstudio.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fmodstudioL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmod.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmod.so.13">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmod.so.13.17">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodL.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodL.so.13">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodL.so.13.17">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodstudio.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodstudio.so.13">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodstudio.so.13.17">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodstudioL.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodstudioL.so.13">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libfmodstudioL.so.13.17">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FmodForFoxes" Version="3.0.0" />
+    <PackageReference Include="FmodForFoxes.Desktop" Version="3.0.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
