@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using FmodForFoxes;
 using System.Runtime.InteropServices;
-using FMOD;
+using FmodForFoxes.Studio;
 
 namespace BrickBreaker
 {
@@ -34,6 +34,12 @@ namespace BrickBreaker
         //blocks
         List<Block> blocks = new List<Block>();
         private int blockHit = 0;
+        //this is simply used for knowing where to spawn powerups
+        private Vector2 _blockPosition;
+
+        //PowerUps
+        List<PowerUp> powerUp = new List<PowerUp>();
+        double _powerUpChance = 0.2;
 
         //fmod studio stuff
         private readonly INativeFmodLibrary _nativeLibrary;
@@ -41,7 +47,6 @@ namespace BrickBreaker
         public Sound _sPlayerDeath;
         public Sound _sBallHit;
         public Channel _channel;
-        public FMOD.Studio.System _system;
 
         //This block layout variable defines how many of each block there are and what type
         //The color of the block is determined by the number in the array
@@ -70,11 +75,12 @@ namespace BrickBreaker
             _graphics.ApplyChanges();
 
             FmodManager.Init(_nativeLibrary, FmodInitMode.CoreAndStudio, "Content");
-
+            
             _sPaddleHit = CoreSystem.LoadStreamedSound("pong.wav");
             _sPlayerDeath = CoreSystem.LoadStreamedSound("arcade_die.wav");
             _sBallHit = CoreSystem.LoadStreamedSound("bass_sound.wav");
-
+            _sBallHit.Volume = 0.75f;
+            
             base.Initialize();
         }
 
@@ -175,29 +181,28 @@ namespace BrickBreaker
             foreach (Block b in blocks)
             {
                 //This is if it hits the bottom of the block
+                //LATER SEE IF YOU CAN CLEAN THIS UP, INSTEAD OF HAVING 
                 if (MathF.Abs(ball._position.Y - (b._position.Y + b._height/2)) < ballRadius && 
                     ball._position.X > b._position.X - b._width/2 && 
                     ball._position.X < b._position.X + b._width/2)
                 {
                     ball._ballDirection.Y = ball._ballDirection.Y * -1;
-                    blockHit = blocks.IndexOf(b);
-                    removeBall = true; break;
+                    DestroyBlock(b); break;
+                    
                 }
 
                 //hitting the left side of the blocks
                 if (MathF.Abs(ball._position.X - (b._position.X - b._width/2)) < ballRadius && (b._position.Y + b._height / 2) > ball._position.Y && (b._position.Y - b._height/2 < ball._position.Y))
                 {
                     ball._ballDirection.X = ball._ballDirection.X * -1;
-                    blockHit = blocks.IndexOf(b);
-                    removeBall = true; break;
+                    DestroyBlock(b); break;
                 }
 
                 //hitting the right side of the blocks
                 if (MathF.Abs(ball._position.X - (b._position.X + b._width / 2)) < ballRadius && (b._position.Y + b._height / 2) > ball._position.Y && (b._position.Y - b._height / 2 < ball._position.Y))
                 {
                     ball._ballDirection.X = ball._ballDirection.X * -1;
-                    blockHit = blocks.IndexOf(b);
-                    removeBall = true; break;
+                    DestroyBlock(b); break;
                 }
 
                 if (MathF.Abs(ball._position.Y - (b._position.Y - b._height / 2)) < ballRadius &&
@@ -205,20 +210,35 @@ namespace BrickBreaker
                     ball._position.X < b._position.X + b._width / 2)
                 {
                     ball._ballDirection.Y = ball._ballDirection.Y * -1;
-                    blockHit = blocks.IndexOf(b);
-                    removeBall = true; break;
+                    DestroyBlock(b); break;
                 }
             }
-            if(removeBall)
+
+            //Don't think I need this ccode anymore, this looks a lot cleaner, but imma keep it here just in case
+            /*if(removeBall)
             {
                 _sBallHit.Play();
                 blocks.RemoveAt(blockHit);
                 removeBall = false;
-            }
+                if (_random.NextDouble() < _powerUpChance)
+                {
+                    SpawnPowerUp(_blockPosition);
+                }
+            }*/
            
         }
 
-
+        //This function in called whenever the ball hits a block in order to destroy the block hit
+        private void DestroyBlock(Block block)
+        {
+            _sBallHit.Play();
+            blocks.RemoveAt(blocks.IndexOf(block));
+            if (_random.NextDouble() < _powerUpChance)
+            {
+                SpawnPowerUp(block._position);
+            }
+            
+        }
 
         protected void CheckGameLost()
         {
@@ -239,6 +259,10 @@ namespace BrickBreaker
             }
         }
 
+        protected void SpawnPowerUp(Vector2 position)
+        {
+
+        }
 
         public float randomFloat(float min, float max)
         {
