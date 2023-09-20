@@ -5,9 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using FmodForFoxes;
-using FMOD;
 using System.Runtime.InteropServices;
-
+using FMOD;
 
 namespace BrickBreaker
 {
@@ -38,8 +37,11 @@ namespace BrickBreaker
 
         //fmod studio stuff
         private readonly INativeFmodLibrary _nativeLibrary;
-        
-
+        public Sound _sPaddleHit;
+        public Sound _sPlayerDeath;
+        public Sound _sBallHit;
+        public Channel _channel;
+        public FMOD.Studio.System _system;
 
         //This block layout variable defines how many of each block there are and what type
         //The color of the block is determined by the number in the array
@@ -69,9 +71,9 @@ namespace BrickBreaker
 
             FmodManager.Init(_nativeLibrary, FmodInitMode.CoreAndStudio, "Content");
 
-            var sound = CoreSystem.LoadStreamedSound("pong.wav");
-            //var channel = sound.Play();
-            //channel.Looping = true;
+            _sPaddleHit = CoreSystem.LoadStreamedSound("pong.wav");
+            _sPlayerDeath = CoreSystem.LoadStreamedSound("arcade_die.wav");
+            _sBallHit = CoreSystem.LoadStreamedSound("bass_sound.wav");
 
             base.Initialize();
         }
@@ -136,7 +138,7 @@ namespace BrickBreaker
             {
                 ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(0.3f, -0.981f));
                 frameCount = 20;
-               // var channel  = 
+                _channel = _sPaddleHit.Play();
             }
             //If the ball is on the left side of the paddle then we will send the ball towards the left 
             //Again not perfect but its a work in progress
@@ -147,22 +149,26 @@ namespace BrickBreaker
             {
                 ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(-0.3f, -0.981f));
                 frameCount = 20;
+                _channel = _sPaddleHit.Play();
             }
 
             //These functions are just used when ball collides with a wall or ceiling
             if (MathF.Abs(ball._position.X - 32) < ballRadius)
             {
                 ball._ballDirection.X = ball._ballDirection.X * -1;
+                _sBallHit.Play();
             }
             if(MathF.Abs(ball._position.X - 992) < ballRadius)
             {
                 //riht collision
                 ball._ballDirection.X = ball._ballDirection.X * -1;
+                _sBallHit.Play();
             }
             if(MathF.Abs(ball._position.Y - 32) < ballRadius)
             {
                 //top collisoin
                 ball._ballDirection.Y = ball._ballDirection.Y * -1;
+                _sBallHit.Play();
             }
             frameCount--;
 
@@ -205,7 +211,7 @@ namespace BrickBreaker
             }
             if(removeBall)
             {
-                
+                _sBallHit.Play();
                 blocks.RemoveAt(blockHit);
                 removeBall = false;
             }
@@ -223,6 +229,7 @@ namespace BrickBreaker
                 ball._ballDirection = new Vector2(randomFloat(-0.999f, 0.999f), -0.707f);
                 ball._ballSpeed = 400;
                 lives--;
+                _sPlayerDeath.Play();
             }
             //if the player has no lives then it will exit the game, 
             //later this will be a game over screen where they can restart 
@@ -231,6 +238,7 @@ namespace BrickBreaker
                 Exit();
             }
         }
+
 
         public float randomFloat(float min, float max)
         {

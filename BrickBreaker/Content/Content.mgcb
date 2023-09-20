@@ -16,8 +16,14 @@
 #begin 4359__noisecollector__pongblipf4.wav
 /copy:4359__noisecollector__pongblipf4.wav;pong.wav
 
+#begin arcade_die.wav
+/copy:arcade_die.wav
+
 #begin ball.xnb
 /copy:ball.xnb
+
+#begin bass_sound.wav
+/copy:bass_sound.wav
 
 #begin bg.xnb
 /copy:bg.xnb
