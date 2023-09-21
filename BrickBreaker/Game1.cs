@@ -263,8 +263,57 @@ namespace BrickBreaker
             PowerUp tempPowerUp = new PowerUp((ePowerUpName)_random.Next(3), this);
             tempPowerUp._position = position;
             tempPowerUp.LoadContent();
+            tempPowerUp.BoundingRect();
             //Debug.Write(tempPowerUp._position.ToString());
             powerUps.Add(tempPowerUp);
+        }
+
+        protected void CheckForPowerUps()
+        {
+            Rectangle paddleRect = paddle.BoundingRect();
+            Rectangle powerUpRectangle;
+            for (int i = powerUps.Count - 1; i >= 0; i--)
+            {
+                powerUpRectangle = powerUps[i].BoundingRect();
+                if (powerUpRectangle.Intersects(paddleRect))
+                {
+                    powerUps.RemoveAt(i);
+                }
+            }
+        }
+
+        private void TriggerPowerUp(PowerUp p)
+        {
+            if(p._name == "powerup_c")
+            {
+                CPowerUp();
+                Debug.Write("cccccccccc");
+            }
+            else if(p._name == "powerup_p")
+            {
+                PPowerUp();
+                Debug.Write("pppppppp");
+            }
+            else if(p._name == "powerup_b")
+            {
+                BPowerUp();
+                Debug.Write("bbbbbbbbbb");
+            }
+        }
+
+        private void PPowerUp()
+        {
+            Debug.WriteLine("PPPPPPPPPP");
+        }
+
+        private void CPowerUp()
+        {
+            Debug.WriteLine("CCCCCCC");
+        }
+
+        private void BPowerUp()
+        {
+            Debug.WriteLine("BBBBBBBBBBBB");
         }
 
         public float randomFloat(float min, float max)
@@ -282,6 +331,7 @@ namespace BrickBreaker
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             paddle.Update(deltaTime);
             ball.Update(deltaTime);
+            CheckForPowerUps();
             for (int i = powerUps.Count - 1; i >= 0; i--)
             {
                 powerUps[i].Update(deltaTime);
@@ -291,7 +341,7 @@ namespace BrickBreaker
                 }
             }
             CheckCollision();
-            CheckGameLost();
+            //CheckGameLost();
             FmodManager.Update();
             base.Update(gameTime);
         }

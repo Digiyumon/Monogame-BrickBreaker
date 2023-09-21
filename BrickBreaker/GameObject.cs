@@ -11,11 +11,16 @@ namespace BrickBreaker
 {
     public class GameObject
     {
-        protected String _name = "";
+        public String _name = "";
         protected Texture2D _texture;
         protected Game1 _game;
         public Vector2 _position = Vector2.Zero;
 
+        //Figuring this out rn
+        public Rectangle BoundingRect()
+        {
+            return new Rectangle((int)_position.X, (int)_position.Y, (int)_width, (int)_height); 
+        }
         //Since we are gong to be needing to grab the width and height of game objects very regularly, we just have them as variables for the game object that we can get
         public float _width
         {

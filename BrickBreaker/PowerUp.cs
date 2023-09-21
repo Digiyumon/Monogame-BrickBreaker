@@ -19,7 +19,7 @@ namespace BrickBreaker
     {
 
 
-        private float _fallSpeed = 75f;
+        private float _fallSpeed = 100f;
         public bool remove = false;
 
          public PowerUp(ePowerUpName powerUpName ,Game1 game)
