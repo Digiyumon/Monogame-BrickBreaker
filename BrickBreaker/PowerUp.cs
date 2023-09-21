@@ -7,18 +7,22 @@ using System.Threading.Tasks;
 
 namespace BrickBreaker
 {
+
+    public enum ePowerUpName
+    {
+        powerup_c = 0,
+        powerup_b,
+        powerup_p
+    } 
+
     internal class PowerUp : GameObject
     {
-        public enum ePowerUpName
-        {
-            powerup_c = 0,
-            powerup_b,
-            powerup_p
-        }
 
-        private float _fallSpeed = 9.8f;
 
-        PowerUp(ePowerUpName powerUpName ,Game1 game)
+        private float _fallSpeed = 75f;
+        public bool remove = false;
+
+         public PowerUp(ePowerUpName powerUpName ,Game1 game)
             : base(game)
         {
             switch (powerUpName)
@@ -37,8 +41,10 @@ namespace BrickBreaker
         public override void Update(float deltaTime)
         {
             _position.Y += _fallSpeed * deltaTime;
-
-
+            if (_position.Y > 760)
+            {
+                remove = true;
+            }
             base.Update(deltaTime);
         }
     }

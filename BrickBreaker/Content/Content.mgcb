@@ -73,3 +73,15 @@
 #begin paddle.xnb
 /copy:paddle.xnb
 
+#begin powerup_b.xnb
+/copy:powerup_b.xnb
+
+#begin powerup_c.xnb
+/copy:powerup_c.xnb
+
+#begin powerup_p.xnb
+/copy:powerup_p.xnb
+
+#begin powerup.xnb
+/copy:powerup.xnb
+

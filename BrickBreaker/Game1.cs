@@ -38,7 +38,7 @@ namespace BrickBreaker
         private Vector2 _blockPosition;
 
         //PowerUps
-        List<PowerUp> powerUp = new List<PowerUp>();
+        List<PowerUp> powerUps = new List<PowerUp>();
         double _powerUpChance = 0.2;
 
         //fmod studio stuff
@@ -117,16 +117,13 @@ namespace BrickBreaker
                         blocks.Add(tempBlock);
                     }
                 }
-            
-
-            
         }
 
         protected void CheckCollision()
         {
             float ballRadius = ball._width/ 2;
             
-            bool removeBall = false;
+            //bool removeBall = false;
             //if (ball._position.X > (paddle._position.X - ballRadius - paddle._width / 2) && 
             //    ball._position.X < (paddle._position.X + ballRadius + paddle._width / 2) && 
             //    ball._position.Y < paddle._position.Y && 
@@ -213,7 +210,6 @@ namespace BrickBreaker
                     DestroyBlock(b); break;
                 }
             }
-
             //Don't think I need this ccode anymore, this looks a lot cleaner, but imma keep it here just in case
             /*if(removeBall)
             {
@@ -225,7 +221,6 @@ namespace BrickBreaker
                     SpawnPowerUp(_blockPosition);
                 }
             }*/
-           
         }
 
         //This function in called whenever the ball hits a block in order to destroy the block hit
@@ -233,11 +228,15 @@ namespace BrickBreaker
         {
             _sBallHit.Play();
             blocks.RemoveAt(blocks.IndexOf(block));
-            if (_random.NextDouble() < _powerUpChance)
+            if (_random.NextDouble() <= _powerUpChance)
             {
                 SpawnPowerUp(block._position);
             }
-            
+        }
+
+        private void RemovePowerUp(PowerUp powerUp)
+        {
+            powerUps.Remove(powerUp);
         }
 
         protected void CheckGameLost()
@@ -261,7 +260,11 @@ namespace BrickBreaker
 
         protected void SpawnPowerUp(Vector2 position)
         {
-
+            PowerUp tempPowerUp = new PowerUp((ePowerUpName)_random.Next(3), this);
+            tempPowerUp._position = position;
+            tempPowerUp.LoadContent();
+            //Debug.Write(tempPowerUp._position.ToString());
+            powerUps.Add(tempPowerUp);
         }
 
         public float randomFloat(float min, float max)
@@ -279,6 +282,14 @@ namespace BrickBreaker
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             paddle.Update(deltaTime);
             ball.Update(deltaTime);
+            for (int i = powerUps.Count - 1; i >= 0; i--)
+            {
+                powerUps[i].Update(deltaTime);
+                if (powerUps[i].remove)
+                {
+                    powerUps.RemoveAt(i);
+                }
+            }
             CheckCollision();
             CheckGameLost();
             FmodManager.Update();
@@ -297,6 +308,10 @@ namespace BrickBreaker
             foreach (Block b in blocks)
             {
                 b.Draw(_spriteBatch);
+            }
+            foreach (PowerUp p in powerUps)
+            {
+                p.Draw(_spriteBatch);
             }
             _spriteBatch.End();
             base.Draw(gameTime);
