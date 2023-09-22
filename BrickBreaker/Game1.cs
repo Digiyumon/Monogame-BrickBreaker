@@ -100,7 +100,9 @@ namespace BrickBreaker
             paddle.LoadContent();
             paddle._position = new Vector2(512, 740);
             ball.LoadContent();
-            ball._position = new Vector2(512, 740);
+            ball._position = new Vector2(512, 740 - (ball._height + paddle._height));
+            ball._ballDirection = new Vector2(randomFloat(-0.999f, 0.999f), -0.707f);
+            ball._ballSpeed = 400;
 
             //for loop to be creating the layout of blocks thats provided with the block layout variable
             //since its a 2d array that we are having to sift through, we are using 2 for loops in order to render each of the blocks
@@ -331,6 +333,8 @@ namespace BrickBreaker
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             paddle.Update(deltaTime);
             ball.Update(deltaTime);
+            Debug.WriteLine(ball._position);
+
             CheckForPowerUps();
             for (int i = powerUps.Count - 1; i >= 0; i--)
             {
@@ -341,7 +345,7 @@ namespace BrickBreaker
                 }
             }
             CheckCollision();
-            //CheckGameLost();
+            CheckGameLost();
             FmodManager.Update();
             base.Update(gameTime);
         }
