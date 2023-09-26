@@ -70,6 +70,9 @@
 #begin blocks/block_yellow.xnb
 /copy:blocks/block_yellow.xnb
 
+#begin paddle_long.xnb
+/copy:paddle_long.xnb
+
 #begin paddle.xnb
 /copy:paddle.xnb
 

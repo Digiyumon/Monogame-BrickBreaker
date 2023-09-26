@@ -39,7 +39,8 @@ namespace BrickBreaker
 
         //PowerUps
         List<PowerUp> powerUps = new List<PowerUp>();
-        double _powerUpChance = 0.2;
+        double _powerUpChance = 1.0f;
+        Boolean _catchEnabled = false;
 
         //fmod studio stuff
         private readonly INativeFmodLibrary _nativeLibrary;
@@ -139,7 +140,8 @@ namespace BrickBreaker
             if (ball._position.X > (paddle._position.X - ballRadius - paddle._width / 2) &&
                 ball._position.X < (paddle._position.X + ballRadius + paddle._width / 2) &&
                 ball._position.Y < paddle._position.Y &&
-                ball._position.Y > (paddle._position.Y - ballRadius - paddle._height / 2) && ball._position.X > paddle._position.X && frameCount <= 0)
+                ball._position.Y > (paddle._position.Y - ballRadius - paddle._height / 2) && ball._position.X > paddle._position.X && frameCount <= 0 
+                && _catchEnabled == false)
             {
                 ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(0.3f, -0.981f));
                 frameCount = 20;
@@ -150,7 +152,8 @@ namespace BrickBreaker
             if (ball._position.X > (paddle._position.X - ballRadius - paddle._width / 2) &&
                 ball._position.X < (paddle._position.X + ballRadius + paddle._width / 2) &&
                 ball._position.Y < paddle._position.Y &&
-                ball._position.Y > (paddle._position.Y - ballRadius - paddle._height / 2) && ball._position.X < paddle._position.X && frameCount <= 0)
+                ball._position.Y > (paddle._position.Y - ballRadius - paddle._height / 2) && ball._position.X < paddle._position.X && frameCount <= 0
+                && _catchEnabled == false)
             {
                 ball._ballDirection = Vector2.Reflect(ball._ballDirection, new Vector2(-0.3f, -0.981f));
                 frameCount = 20;
@@ -279,6 +282,7 @@ namespace BrickBreaker
                 powerUpRectangle = powerUps[i].BoundingRect();
                 if (powerUpRectangle.Intersects(paddleRect))
                 {
+                    TriggerPowerUp(powerUps[i]);
                     powerUps.RemoveAt(i);
                 }
             }
@@ -289,33 +293,31 @@ namespace BrickBreaker
             if(p._name == "powerup_c")
             {
                 CPowerUp();
-                Debug.Write("cccccccccc");
             }
             else if(p._name == "powerup_p")
             {
                 PPowerUp();
-                Debug.Write("pppppppp");
             }
             else if(p._name == "powerup_b")
             {
                 BPowerUp();
-                Debug.Write("bbbbbbbbbb");
             }
         }
 
         private void PPowerUp()
         {
-            Debug.WriteLine("PPPPPPPPPP");
+            paddle._name = "paddle_long";
+            paddle.LoadContent();
         }
 
         private void CPowerUp()
-        {
-            Debug.WriteLine("CCCCCCC");
+        {   
+            _catchEnabled = true;
         }
 
         private void BPowerUp()
         {
-            Debug.WriteLine("BBBBBBBBBBBB");
+
         }
 
         public float randomFloat(float min, float max)
@@ -333,7 +335,7 @@ namespace BrickBreaker
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             paddle.Update(deltaTime);
             ball.Update(deltaTime);
-            Debug.WriteLine(ball._position);
+            
 
             CheckForPowerUps();
             for (int i = powerUps.Count - 1; i >= 0; i--)
